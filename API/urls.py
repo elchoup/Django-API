@@ -21,7 +21,9 @@ from user.views import CreateUserView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("create_user/", CreateUserView.as_view(), name="create-user"),
+    path(
+        "create_user/", CreateUserView.as_view({"post": "create"}), name="create-user"
+    ),
     path("api/token/", TokenObtainPairView.as_view, name="obtain_token"),
     path("api/tokent/refresh/", TokenRefreshView.as_view, name="refresh_token"),
 ]
