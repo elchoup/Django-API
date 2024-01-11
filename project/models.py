@@ -8,12 +8,7 @@ class Contributor(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="author_contributor",
-    )
-    author = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="user_contributor",
+        related_name="contributor",
     )
 
 
@@ -24,8 +19,14 @@ class Project(models.Model):
         IOS = "ios"
         ANDROID = "android"
 
-    author = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    contributor = models.ForeignKey(Contributor, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="author_project",
+    )
+    contributors = models.ManyToManyField(
+        Contributor, related_name="contributor_project", blank=True
+    )
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     type = models.CharField(max_length=10, choices=Type.choices, default=Type.BACKEND)

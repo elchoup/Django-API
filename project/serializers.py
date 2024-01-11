@@ -1,22 +1,18 @@
 from rest_framework import serializers
 
-import models
+from . import models
 from user.serializers import UserSerializer
 
 
 class ContributorSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    author = UserSerializer()
 
     class Meta:
         model = models.Contributor
-        fields = ["user", "author"]
+        fields = ["user"]
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    contributor = ContributorSerializer()
-    author = UserSerializer()
-
     type = serializers.ChoiceField(
         choices=models.Project.Type.choices, default=models.Project.Type.BACKEND
     )
@@ -25,8 +21,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = models.Project
         fields = [
             "id",
-            "author",
-            "contributor",
             "title",
             "description",
             "type",
