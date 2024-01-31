@@ -4,12 +4,6 @@ import uuid
 
 
 # Create your models here.
-class Contributor(models.Model):
-    user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="contributor",
-    )
 
 
 class Project(models.Model):
@@ -25,11 +19,23 @@ class Project(models.Model):
         related_name="author_project",
     )
     contributors = models.ManyToManyField(
-        Contributor, related_name="contributor_project", blank=True
+        settings.AUTH_USER_MODEL,
+        related_name="contributor_project",
+        blank=True,
+        through="Contributor",
     )
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     type = models.CharField(max_length=10, choices=Type.choices, default=Type.BACKEND)
+
+
+class Contributor(models.Model):
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="contributor",
+    )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
 class Issue(models.Model):

@@ -5,5 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 
 
 class CreateUserView(ModelViewSet):
+    authentication_classes = []
     queryset = User.objects.all()
     serializer_class = UserSerializer

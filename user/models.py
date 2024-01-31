@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    birthdate = models.DateField()
+    birthdate = models.DateField(null=True, blank=True)
     can_be_contacted = models.CharField(
         max_length=3, choices=[("yes", "Yes"), ("no", "No")], default="yes"
     )
