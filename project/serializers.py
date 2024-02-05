@@ -56,6 +56,8 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "description",
+            "author",
+            "issue",
             "link",
         ]
         read_only_fields = ["author", "issue", "unique_identifier"]

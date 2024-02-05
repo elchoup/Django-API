@@ -22,8 +22,10 @@ from rest_framework_nested import routers
 from user.views import CreateUserView
 
 from project import views
+from user.views import UserView
 
 router = routers.DefaultRouter()
+router.register(r"users", UserView)
 router.register(r"projects", views.ProjectViewSet)
 router.register(r"issues", views.IssueViewset)
 router.register(r"comments", views.CommentViewset)

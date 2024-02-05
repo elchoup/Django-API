@@ -14,10 +14,10 @@ First create a folder to put the project in.
 To check the results of this API you should use POSTMAN.
 ```
 $ git clone https://github.com/elchoup/Django-API.git
+$ pip install pipenv
 $ cd API
-$ python -m venv env
-$ env\scripts\activate
-$ pip install -r requirements.txt
+$ pipenv install --requirements requirements.txt
+$ pipenv shell
 $ python manage.py runserver
 
 ```

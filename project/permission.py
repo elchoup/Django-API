@@ -34,13 +34,10 @@ class IsContributor(permissions.BasePermission):
 class IsContributorProjects(permissions.BasePermission):
     """Function permission to verificate if user is contributors of projects"""
 
-    message = "Vous n'êtes contributeur d'aucun projet"
+    message = (
+        "Vous devez être contributeur pour lire ce projet et auteur pour le modifier"
+    )
 
-    def has_permission(self, request, view):
-        projects = Project.objects.filter(contributors=request.user)
-        if projects.exists():
-            return True
-        if view.action == "create":
-            return True
-        if view.action in ["update", "partial_update", "destroy"]:
-            return True
+    def has_object_permission(self, request, view, obj):
+        print(f"DEBUG {obj.contributors}")
+        return request.user.contributor_project.filter(pk=obj.id).exists()

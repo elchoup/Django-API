@@ -17,8 +17,8 @@ class ProjectViewSet(ModelViewSet):
 
     permission_classes = [
         IsAuthenticated,
-        IsAuthorOrReadOnly,
         IsContributorProjects,
+        IsAuthorOrReadOnly,
     ]
     authentication_classes = [JWTAuthentication]
 
@@ -28,8 +28,10 @@ class ProjectViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         """ we render only projects that is contributor for """
-        projects = models.Project.objects.filter(contributors=user)
-        return projects
+        if self.action == "list":
+            projects = user.contributor_project.all()
+            return projects
+        return models.Project.objects.all()
 
     def perform_create(self, serializer):
         """create the project with the user as author then add him to the contributors"""
