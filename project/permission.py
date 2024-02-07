@@ -41,3 +41,12 @@ class IsContributorProjects(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         print(f"DEBUG {obj.contributors}")
         return request.user.contributor_project.filter(pk=obj.id).exists()
+
+
+class IsProjectAuthor(permissions.BasePermission):
+    message = "Vous n'êtes pas auteur du projet"
+
+    def has_permission(self, request, view):
+        project_id = view.kwargs.get("project_pk")
+        project = get_object_or_404(Project, id=project_id)
+        return request.user == project.author

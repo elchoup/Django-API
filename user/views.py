@@ -13,6 +13,8 @@ class CreateUserView(ModelViewSet):
 
 
 class UserView(ModelViewSet):
+    """To modify get user detail or delete only the user himself is allowed"""
+
     permission_classes = [IsUser]
     authentication_classes = [
         JWTAuthentication,

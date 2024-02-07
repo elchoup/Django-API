@@ -5,7 +5,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .permission import IsAuthorOrReadOnly, IsContributor, IsContributorProjects
+from .permission import (
+    IsAuthorOrReadOnly,
+    IsContributor,
+    IsContributorProjects,
+    IsProjectAuthor,
+)
 
 from . import models
 from user.models import User
@@ -44,22 +49,36 @@ class ProjectViewSet(ModelViewSet):
 
 
 class ContributorViewset(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProjectAuthor]
     authentication_classes = [JWTAuthentication]
 
     serializer_class = serializers.ContributorSerializer
     queryset = models.Contributor.objects.all()
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         """Functon to create a contributor waiting for user id and project id from the user.
         Only the author of the project can create one"""
         user_id = request.data.get("user_id")
-        project_id = request.data.get("project_id")
+        project_id = self.kwargs.get("project_pk")
+        """project_id = request.data.get("project_id")"""
 
         user = get_object_or_404(User, id=user_id)
         project = get_object_or_404(models.Project, id=project_id)
 
-        if project.author == request.user:
+        if user in project.contributors.all():
+            return Response(
+                {"meassage": "l'utilisateur est déjà contributeur de ce projet"}
+            )
+        else:
+            project.contributors.add(user)
+            contributor, created = models.Contributor.objects.get_or_create(
+                user=user, project=project
+            )
+
+            serializer = self.get_serializer(contributor)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        """if project.author == request.user:
             if user in project.contributors.all():
                 return Response(
                     {"meassage": "l'utilisateur est déjà contributeur de ce projet"}
@@ -77,16 +96,7 @@ class ContributorViewset(ModelViewSet):
                 {
                     "message": "Vous n'avez pas la permission d'ajouter un contributeur à ce projet'"
                 }
-            )
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if request.user == instance.author:
-            self.perform_destroy(instance)
-        else:
-            return Response(
-                {"message": "Vous n'avez pas la permission de modifier ces données"}
-            )
+            )"""
 
 
 class IssueViewset(ModelViewSet):
