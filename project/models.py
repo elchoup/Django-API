@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from datetime import datetime
 import uuid
 
 
@@ -27,6 +28,7 @@ class Project(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     type = models.CharField(max_length=10, choices=Type.choices, default=Type.BACKEND)
+    created_time = models.DateTimeField(default=datetime.now)
 
 
 class Contributor(models.Model):
@@ -63,6 +65,7 @@ class Issue(models.Model):
     )
     tag = models.CharField(max_length=3, choices=Tag.choices, default=Tag.BUG)
     status = models.CharField(max_length=3, choices=Status.choices, default=Status.TODO)
+    created_time = models.DateTimeField(default=datetime.now)
 
 
 class Comment(models.Model):
@@ -73,3 +76,4 @@ class Comment(models.Model):
     unique_identifier = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True
     )
+    created_time = models.DateTimeField(default=datetime.now)

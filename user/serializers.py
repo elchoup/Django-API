@@ -21,6 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def get_age(self, obj):
+        """function to calculate the age
+        We calculate the year and we check if his birthday is before the actual date
+        or after to see if his birthday of the current year is passed or not"""
         today = date.today()
         age = (
             today.year
